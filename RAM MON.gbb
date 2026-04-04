@@ -10,7 +10,7 @@
   "author": "Tony",
   "genre": "Tool",
   "version": "1.8.2",
-  "url": "",
+  "url": "https://github.com/paladin-t/ram-mon.gbb",
   "icon": "",
   "run_on_open": true,
   "case_insensitive": true,
@@ -40,7 +40,7 @@
     }
   },
   "created": 1693927813,
-  "modified": 1775129520,
+  "modified": 1775294121,
   "preference": {
     "font_size": [
       -1,
