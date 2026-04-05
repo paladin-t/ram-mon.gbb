@@ -2,7 +2,7 @@
 <info>
 {
   "title": "RAM MON",
-  "kernel": "default",
+  "kernel": "for_ram_mon",
   "cartridge_type": "classic|colored|extension",
   "sram_type": "2",
   "has_rtc": false,
@@ -40,7 +40,7 @@
     }
   },
   "created": 1693927813,
-  "modified": 1775294121,
+  "modified": 1775357366,
   "preference": {
     "font_size": [
       -1,
@@ -85,6 +85,10 @@
 ' which could be used as an extension RAM test tool.
 
 ' Initialization.
+let is_ap = false
+let is_gbboy = false
+gosub CheckAnaloguePocket
+gosub CheckGBBoy
 option SCREEN_MODE, TEXT_MODE
 fill tile(0, 256) = #0
 
@@ -139,6 +143,86 @@ loop:
   update
   goto loop
 
+' Check whetner is running on an Analogue Pocket.
+CheckAnaloguePocket:
+  ' Ported from https://github.com/bbbbbr/is_it_analoguepocket
+  WAVE_RAM_POCKET_DMG:
+    data 0x70, 0xb0, 0xfc, 0xd8
+    data 0x88, 0xd3, 0x12, 0x60
+    data 0x62, 0x77, 0x3b, 0xfe
+    data 0x6d, 0xa9, 0x76, 0xdb
+  WAVE_RAM_POCKET_CGB:
+    data 0x24, 0xae, 0xe0, 0x8d
+    data 0x80, 0xf6, 0x79, 0x2d
+    data 0x09, 0xff, 0x41, 0xbd
+    data 0xc0, 0x76, 0x46, 0xdb
+
+  begin def
+    def DEVICE_TYPE_AP   = 0x40
+    def NR52_REG         = addressof("NR52_REG")
+    def AUD3WAVE         = addressof("AUD3WAVE")
+    def WAVE_RAM_SIZE    = 16
+    dim wave_ram_save[16]
+
+    x = addressof("device_type")
+    y = peek(x)
+    if y band DEVICE_TYPE_AP then
+      ' This optional bit requires a modified kernel dedicated to RAM MON.
+      is_ap = true
+    else if not query IS_CGB then
+      ' This algorithm works with DMG with the regular kernel.
+      gosub SaveWaveRam
+      restore WAVE_RAM_POCKET_DMG
+      gosub CheckFingerprint
+      if is_ap then
+        return
+      end if
+      restore WAVE_RAM_POCKET_CGB
+      gosub CheckFingerprint
+      if is_ap then
+        return
+      end if
+    end if
+    return
+
+    SaveWaveRam:
+      poke(NR52_REG, 0x80)
+      for i = 0 to WAVE_RAM_SIZE - 1
+        wave_ram_save[i] = peek(AUD3WAVE + i)
+      next
+      return
+    CheckFingerprint:
+      for i = 0 to WAVE_RAM_SIZE - 1
+        read x
+        if wave_ram_save[i] <> x then
+          return
+        end if
+      next
+      is_ap = true
+      return
+  end def
+' Check whether is running on a GB Boy.
+CheckGBBoy:
+  begin def
+    def REG = 0xff71
+    x = peek(REG)
+    poke(REG, 0x11)
+    if peek(REG) <> 0x11 then
+      return
+    end if
+    poke(REG, 0x33)
+    if peek(REG) <> 0x33 then
+      return
+    end if
+    poke(REG, 0x55)
+    if peek(REG) <> 0x55 then
+      return
+    end if
+    poke(REG, x)
+    is_gbboy = true
+    return
+  end def
+
 ' Refresh the device registers.
 RefreshDeviceRegisters:
   ' The CPU register.
@@ -180,6 +264,26 @@ RefreshDeviceRegisters:
     else
       print "GBB"
     end if
+  else if is_ap then
+    if query IS_AGB then
+      print "AP(A)"
+    else if query IS_CGB then
+      print "AP(C)"
+    else if query IS_SGB then
+      print "AP(S)"
+    else
+      print "AP"
+    end if
+  else if is_gbboy then
+    if query IS_AGB then
+      print "BOY(A)"
+    else if query IS_CGB then
+      print "BOY(C)"
+    else if query IS_SGB then
+      print "BOY(S)"
+    else
+      print "BOY"
+    end if
   else if query IS_AGB then
     print "AGB"
   else if query IS_CGB then
@@ -187,9 +291,8 @@ RefreshDeviceRegisters:
   else if query IS_SGB then
     print "SGB"
   else
-    print "GB"
+    print "DMG"
   end if
-
   return
 
 ' Hide the cursor at current position.
@@ -244,6 +347,7 @@ RefreshAddr:
   else if addr >= 0xfe00 and addr <= 0xfe9f then
     print "OAM";
   ' ... Begin of extension memory region checks ...
+  ' See: https://paladin-t.github.io/kits/gbb/extensions.html
   else if addr = 0xfea0 then
     print "Ext. EXTF"
   else if addr = 0xfea1 then
@@ -280,7 +384,7 @@ RefreshAddr:
     print "Ext. Reserved"
   ' ... End of extension memory region checks ...
   else if addr = 0xff40 then
-    print "LCDC"
+    print "LCDC" ' See: https://gbdev.io/pandocs/LCDC.html
     readonly = true
   else if addr >= 0xff00 and addr <= 0xff7f then
     print "I/O registers"
