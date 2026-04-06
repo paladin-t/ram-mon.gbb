@@ -92,10 +92,6 @@ gosub CheckAnaloguePocket
 gosub CheckGBBoy
 option SCREEN_MODE, TEXT_MODE
 fill tile(0, 256) = #0
-map on
-window on
-sprite on
-window 7, 0
 
 let readonly = false ' Flag to indicate if current memory address is read-only.
 let addr = 0xc000    ' Default memory address to start with (WRAM 0).
