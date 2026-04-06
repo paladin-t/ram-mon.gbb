@@ -86,9 +86,7 @@
 
 ' Initialization.
 let is_ap = false
-let is_gbboy = false
 gosub CheckAnaloguePocket
-gosub CheckGBBoy
 option SCREEN_MODE, TEXT_MODE
 fill tile(0, 256) = #0
 
@@ -201,27 +199,6 @@ CheckAnaloguePocket:
       is_ap = true
       return
   end def
-' Check whether is running on a GB Boy.
-CheckGBBoy:
-  begin def
-    def REG = 0xff71
-    x = peek(REG)
-    poke(REG, 0x11)
-    if peek(REG) <> 0x11 then
-      return
-    end if
-    poke(REG, 0x33)
-    if peek(REG) <> 0x33 then
-      return
-    end if
-    poke(REG, 0x55)
-    if peek(REG) <> 0x55 then
-      return
-    end if
-    poke(REG, x)
-    is_gbboy = true
-    return
-  end def
 
 ' Refresh the device registers.
 RefreshDeviceRegisters:
@@ -273,16 +250,6 @@ RefreshDeviceRegisters:
       print "AP(S)"
     else
       print "AP"
-    end if
-  else if is_gbboy then
-    if query IS_AGB then
-      print "BOY(A)"
-    else if query IS_CGB then
-      print "BOY(C)"
-    else if query IS_SGB then
-      print "BOY(S)"
-    else
-      print "BOY"
     end if
   else if query IS_AGB then
     print "AGB"

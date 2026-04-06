@@ -15,7 +15,7 @@ Put "RAM MON.gb" on any GameBoy device, and launch it. It shows a memory bus acc
 - A button to read from the specific address
 - B button to write to the specific address
 
-<img src="docs/running on gba.jpg" height="480"> <img src="docs/running on gbc.jpg" height="480"> <img src="docs/running on ap.jpg" height="480">
+<img src="docs/running on gbp.jpg" height="360"> <img src="docs/running on gbc.jpg" height="360"> <img src="docs/running on gba.jpg" height="360"> <img src="docs/running on ap.jpg" height="360">
 
 ### Source Code
 
