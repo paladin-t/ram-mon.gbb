@@ -86,7 +86,9 @@
 
 ' Initialization.
 let is_ap = false
+let is_gbboy = false
 gosub CheckAnaloguePocket
+gosub CheckGBBoy
 option SCREEN_MODE, TEXT_MODE
 fill tile(0, 256) = #0
 
@@ -156,11 +158,7 @@ CheckAnaloguePocket:
     data 0xc0, 0x76, 0x46, 0xdb
 
   begin def
-    def DEVICE_TYPE_AP   = 0x40
-    def NR52_REG         = addressof("NR52_REG")
-    def AUD3WAVE         = addressof("AUD3WAVE")
-    def WAVE_RAM_SIZE    = 16
-    dim wave_ram_save[16]
+    def DEVICE_TYPE_AP = 0x40
 
     x = addressof("device_type")
     y = peek(x)
@@ -172,33 +170,57 @@ CheckAnaloguePocket:
       gosub SaveWaveRam
       restore WAVE_RAM_POCKET_DMG
       gosub CheckFingerprint
-      if is_ap then
+      if z then
+        is_ap = true
         return
       end if
       restore WAVE_RAM_POCKET_CGB
       gosub CheckFingerprint
-      if is_ap then
+      if z then
+        is_ap = true
         return
       end if
     end if
     return
-
-    SaveWaveRam:
-      poke(NR52_REG, 0x80)
-      for i = 0 to WAVE_RAM_SIZE - 1
-        wave_ram_save[i] = peek(AUD3WAVE + i)
-      next
-      return
-    CheckFingerprint:
-      for i = 0 to WAVE_RAM_SIZE - 1
-        read x
-        if wave_ram_save[i] <> x then
-          return
-        end if
-      next
-      is_ap = true
-      return
   end def
+' Check whether is running on a GB Boy.
+CheckGBBoy:
+  WAVE_RAM_GB_BOY:
+    data 0x00, 0xff, 0x00, 0xff
+    data 0x00, 0xff, 0x00, 0xff
+    data 0x80, 0xff, 0x00, 0xff
+    data 0x00, 0xff, 0x00, 0xff
+
+  begin do
+    gosub SaveWaveRam
+    restore WAVE_RAM_GB_BOY
+    gosub CheckFingerprint
+    if z then
+      is_gbboy = true
+      return
+    end if
+    return
+  end do
+' Common structure and routines for device detection.
+def NR52_REG      = addressof("NR52_REG")
+def AUD3WAVE      = addressof("AUD3WAVE")
+def WAVE_RAM_SIZE = 16
+dim wave_ram_save[16]
+SaveWaveRam:
+  poke(NR52_REG, 0x80)
+  for i = 0 to WAVE_RAM_SIZE - 1
+    wave_ram_save[i] = peek(AUD3WAVE + i)
+  next
+  return
+CheckFingerprint:
+  for i = 0 to WAVE_RAM_SIZE - 1
+    read x
+    if wave_ram_save[i] <> x then
+      return
+    end if
+  next
+  z = true
+  return
 
 ' Refresh the device registers.
 RefreshDeviceRegisters:
@@ -250,6 +272,16 @@ RefreshDeviceRegisters:
       print "AP(S)"
     else
       print "AP"
+    end if
+  else if is_gbboy then
+    if query IS_AGB then
+      print "BOY(A)"
+    else if query IS_CGB then
+      print "BOY(C)"
+    else if query IS_SGB then
+      print "BOY(S)"
+    else
+      print "BOY"
     end if
   else if query IS_AGB then
     print "AGB"
