@@ -83,6 +83,7 @@
 <code page="0">
 ' This program reads and writes value at specific RAM address,
 ' which could be used as an extension RAM test tool.
+' See also: https://gbdev.io/pandocs/Memory_Map.html.
 
 ' Initialization.
 let is_ap = false
@@ -91,6 +92,10 @@ gosub CheckAnaloguePocket
 gosub CheckGBBoy
 option SCREEN_MODE, TEXT_MODE
 fill tile(0, 256) = #0
+map on
+window on
+sprite on
+window 7, 0
 
 let readonly = false ' Flag to indicate if current memory address is read-only.
 let addr = 0xc000    ' Default memory address to start with (WRAM 0).
@@ -382,11 +387,78 @@ RefreshAddr:
   else if addr >= 0xfef0 and addr <= 0xfeff then
     print "Ext. Reserved"
   ' ... End of extension memory region checks ...
-  else if addr = 0xff40 then
-    print "LCDC" ' See: https://gbdev.io/pandocs/LCDC.html
-    readonly = true
   else if addr >= 0xff00 and addr <= 0xff7f then
-    print "I/O registers"
+    if addr = 0xff00 then
+      print "Joypad input"
+    else if addr >= 0xff01 and addr <= 0xff02 then
+      print "Serial transfer"
+    else if addr >= 0xff04 and addr <= 0xff07 then
+      print "Timer and divider"
+    else if addr = 0xff0f then
+      print "Interrupts"
+    else if addr >= 0xff10 and addr <= 0xff26 then
+      print "Audio"
+    else if addr >= 0xff30 and addr <= 0xff3f then
+      print "Wave pattern"
+    else if addr = 0xff40 then
+      print "LCDC"
+    else if addr = 0xff41 then
+      print "STAT"
+    else if addr = 0xff42 then
+      print "SCY"
+    else if addr = 0xff43 then
+      print "SCX"
+    else if addr = 0xff44 then
+      print "LY"
+    else if addr = 0xff45 then
+      print "LYC"
+    else if addr = 0xff46 then
+      print "DMA"
+    else if addr = 0xff47 then
+      print "BGP"
+    else if addr = 0xff48 then
+      print "OBP0"
+    else if addr = 0xff49 then
+      print "OBP1"
+    else if addr = 0xff4a then
+      print "WY"
+    else if addr = 0xff4b then
+      print "WX"
+    else if addr = 0xff4c then
+      print "KEY0/SYS"
+    else if addr = 0xff4d then
+      print "KEY1/SPD"
+    else if addr = 0xff4f then
+      print "VBK"
+    else if addr = 0xff50 then
+      print "Boot ROM map ctrl"
+    else if addr = 0xff51 then
+      print "HDMA1"
+    else if addr = 0xff52 then
+      print "HDMA2"
+    else if addr = 0xff53 then
+      print "HDMA3"
+    else if addr = 0xff54 then
+      print "HDMA4"
+    else if addr = 0xff55 then
+      print "HDMA5"
+    else if addr = 0xff56 then
+      print "IR port"
+    else if addr = 0xff68 then
+      print "BCPS/BGPI"
+    else if addr = 0xff69 then
+      print "BCPD/BGPD"
+    else if addr = 0xff6a then
+      print "OCPS/OBPI"
+    else if addr = 0xff6b then
+      print "OCPD/OBPD"
+    else if addr = 0xff6c then
+      print "OPRI"
+    else if addr = 0xff70 then
+      print "SVBK/WBK"
+    else
+      print "I/O registers"
+    end if
   else if addr >= 0xff80 and addr <= 0xfffe then
     print "HRAM"
   else if addr = 0xffff then
@@ -607,7 +679,18 @@ B_:
   if readonly then
     return ' Don't write to read-only memory.
   end if
-  poke(addr, value)
+  if addr = 0xff40 then
+    ' See: https://gbdev.io/pandocs/LCDC.html
+    x = peek(addr) band 0b10000000
+    if x then
+      value = value bor 0b10000000 ' DO NOT turn off the screen here.
+      poke(addr, value)
+    else
+      ' Do nothing.
+    end if
+  else
+    poke(addr, value)
+  end if
   value = peek(addr) ' Read back to confirm.
   gosub RefreshVal
   gosub SaveAddr

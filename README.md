@@ -2,6 +2,8 @@
 
 RAM MON is a [GB BASIC](https://paladin-t.github.io/kits/gbb/) program runs on GameBoy, which allows it to read and write to the memory bus directly.
 
+Read [Memory Map](https://gbdev.io/pandocs/Memory_Map.html) for technical details about the memory bus.
+
 ### Running
 
 Put "RAM MON.gb" on any GameBoy device, and launch it. It shows a memory bus accessing interface, and also guesses the running device type.
