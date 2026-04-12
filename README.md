@@ -1,6 +1,6 @@
 ## RAM MON
 
-RAM MON is a [GB BASIC](https://paladin-t.github.io/kits/gbb/) program runs on GameBoy, which allows it to read and write to the memory bus directly.
+RAM MON is a [GB BASIC](https://paladin-t.github.io/kits/gbb/) program runs on GameBoy, which allows it to read and write to the memory bus directly. This software aids in the development of emulators and simulators, assists in homebrew cartridge production, and supports console hardware debugging.
 
 <img src="docs/cartridge label.png" height="320">
 
@@ -24,3 +24,7 @@ Put "RAM MON.gb" on any GameBoy device, and launch it. It shows a memory bus acc
 ### Source Code
 
 Open "RAM MON.gbb" with the [latest GB BASIC](https://store.steampowered.com/app/2308700/), it implements all common features. If you prefer to enable extra platform detection, such as Analogue Pocket etc. consider installing the dedicated kernel "kernel/for_ram_mon.zip" in GB BASIC for this RAM MON program. The "kernel" directory also contains the kernel's source code.
+
+### Disclaimer
+
+Before using this software, please ensure you have a proper understanding of Game Boy hardware. I am not responsible for any hardware damage or other issues resulting from improper use.
