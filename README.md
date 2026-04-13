@@ -6,7 +6,7 @@ RAM MON is a [GB BASIC](https://paladin-t.github.io/kits/gbb/) program runs on G
 
 ### Running
 
-Put "RAM MON.gb" on any Game Boy device, and launch it. It shows a memory bus accessing interface, and also guesses the running device type.
+Put "RAM MON.gb" on any Game Boy device, and launch it. Or try in [browser](https://paladin-t.github.io/ram-mon.gbb/index.html). It shows a memory bus accessing interface, and also guesses the running device type.
 
 <img src="docs/screenshot.png" height="320">
 

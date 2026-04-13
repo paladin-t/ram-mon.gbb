@@ -1,0 +1,142 @@
+{
+  "emulator": {
+    "show_title_bar": true,
+    "show_status_bar": true,
+    "show_preference_dialog_on_esc_press": true
+  },
+  "device": {
+    "type": 3,
+    "prefer_sgb": false,
+    "save_sram_on_stop": true,
+    "classic_palette": [
+      4291885280,
+      4285579400,
+      4283852852,
+      4280293384
+    ]
+  },
+  "canvas": {
+    "fix_ratio": true,
+    "integer_scale": true
+  },
+  "input": {
+    "gamepad": [
+      [
+        {
+          "device": 1,
+          "index": 0,
+          "type": 0,
+          "value": 26
+        },
+        {
+          "device": 1,
+          "index": 0,
+          "type": 0,
+          "value": 22
+        },
+        {
+          "device": 1,
+          "index": 0,
+          "type": 0,
+          "value": 4
+        },
+        {
+          "device": 1,
+          "index": 0,
+          "type": 0,
+          "value": 7
+        },
+        {
+          "device": 1,
+          "index": 0,
+          "type": 0,
+          "value": 30
+        },
+        {
+          "device": 1,
+          "index": 0,
+          "type": 0,
+          "value": 31
+        },
+        {
+          "device": 1,
+          "index": 0,
+          "type": 0,
+          "value": 14
+        },
+        {
+          "device": 1,
+          "index": 0,
+          "type": 0,
+          "value": 13
+        }
+      ],
+      [
+        {
+          "device": 2,
+          "index": 0,
+          "type": 2,
+          "sub": 1,
+          "value": -1
+        },
+        {
+          "device": 2,
+          "index": 0,
+          "type": 2,
+          "sub": 1,
+          "value": 1
+        },
+        {
+          "device": 2,
+          "index": 0,
+          "type": 2,
+          "sub": 0,
+          "value": -1
+        },
+        {
+          "device": 2,
+          "index": 0,
+          "type": 2,
+          "sub": 0,
+          "value": 1
+        },
+        {
+          "device": 2,
+          "index": 0,
+          "type": 0,
+          "value": 2
+        },
+        {
+          "device": 2,
+          "index": 0,
+          "type": 0,
+          "value": 3
+        },
+        {
+          "device": 2,
+          "index": 0,
+          "type": 0,
+          "value": 0
+        },
+        {
+          "device": 2,
+          "index": 0,
+          "type": 0,
+          "value": 1
+        }
+      ]
+    ],
+    "onscreen_gamepad": {
+      "enabled": true,
+      "swap_ab": false,
+      "scale": 1.0,
+      "padding": [
+        8.0,
+        12.0
+      ]
+    }
+  },
+  "debug": {
+    "onscreen_debug_enabled": true
+  }
+}
