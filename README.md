@@ -17,7 +17,9 @@ Put "RAM MON.gb" on any Game Boy device, and launch it. Or try in [browser](http
 - A button to read from the specific address
 - B button to write to the specific address
 
-<img src="docs/running on gbp.jpg" height="320"> <img src="docs/running on gbc.jpg" height="320"> <img src="docs/running on gba.jpg" height="320"> <img src="docs/running on ap.jpg" height="320">
+<img src="docs/running on gbp.jpg" height="374"> <img src="docs/running on gbc.jpg" height="374"> <img src="docs/running on gba.jpg" height="374">
+<br>
+<img src="docs/running on ap.jpg" height="320"> <img src="docs/running on gbboy.jpg" height="320"> <img src="docs/running on sgb.jpg" height="320">
 
 Read [Memory Map](https://gbdev.io/pandocs/Memory_Map.html) for technical details about the memory bus.
 
