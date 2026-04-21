@@ -334,12 +334,11 @@ void vm_rpn(DUMMY0_t dummy0, DUMMY1_t dummy1, SCRIPT_CTX * THIS) OLDCALL NONBANK
 
     ARGS = THIS->stack_ptr;
     while (TRUE) {
-        UINT8 op = *(THIS->PC++);
+        const UINT8 op = *(THIS->PC++);
         if (op >= 32) {
             switch (op) {
             case VM_OP_R_INT8: // Int8.
-                op = *(THIS->PC++);
-                *(THIS->stack_ptr) = op;
+                *(THIS->stack_ptr) = *((INT8 *)(THIS->PC++));
 
                 break;
             case VM_OP_R_INT16: // Int16.
@@ -895,10 +894,13 @@ STATIC void reset_contexts(BOOLEAN reset) {
 }
 
 // Initializes the script runner contexts.
-void script_runner_init(BOOLEAN reset) BANKED {
+void script_runner_init(void) BANKED {
+    // Delay for a short while.
+    for (UINT8 i = 4; i != 0; --i) vsync(); // This delay is required for PAL SNES.
+
     // Setup the sub modules.
     device_init(); // Initialize the device module first.
-                   // The following modules' initialization routines should not depend on each other.
+                   // The following modules' initialization routines do not depend on each other.
     actor_init();
     audio_init();
     effects_init();
@@ -927,7 +929,7 @@ void script_runner_init(BOOLEAN reset) BANKED {
     font_init();
 
     // Setup the script contexts.
-    reset_contexts(reset);
+    reset_contexts(TRUE);
 
     // Setup the random number generator.
     initrand(DIV_REG);
